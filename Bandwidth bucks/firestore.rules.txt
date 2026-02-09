@@ -1,0 +1,70 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /** 
+     * @description Checks if the user is a designated administrator.
+     * We manually trust 'stayconnectedtoearn@gmail.com' for simplicity in this prototype.
+     */
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid)) || 
+        request.auth.token.email == "stayconnectedtoearn@gmail.com"
+      );
+    }
+
+    // --- Collection Rules ---
+
+    match /users/{userId} {
+      // Admins can list all users to manage them
+      allow get, list: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isOwner(userId) || isAdmin();
+
+      match /earningsRecords/{earningsRecordId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create: if isOwner(userId);
+        allow update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      match /payoutRequests/{payoutRequestId} {
+        // Users can view their own payout requests
+        allow get, list: if isOwner(userId) || isAdmin();
+        // Users can only create pending payout requests
+        allow create: if isOwner(userId) && request.resource.data.status == "pending";
+        // Only admins can update status (approve/reject)
+        allow update: if isAdmin() && (request.resource.data.status == "approved" || request.resource.data.status == "rejected");
+        // Only admin can delete
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Allow admins to view all pending payouts across all users
+    match /{path=**}/payoutRequests/{payoutRequestId} {
+      allow list: if isAdmin();
+      allow get: if isAdmin() || isOwner(get(/databases/$(database)/documents/users/$(payoutRequestId)).data.userId);
+    }
+
+    match /roles_admin/{userId} {
+      allow get, list: if isAdmin();
+      allow create, update, delete: if false; 
+    }
+  }
+}

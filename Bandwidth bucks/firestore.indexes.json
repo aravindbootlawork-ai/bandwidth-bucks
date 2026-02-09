@@ -1,0 +1,13 @@
+
+{
+  "indexes": [
+    {
+      "collectionGroup": "payoutRequests",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "requestDate", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

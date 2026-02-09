@@ -1,0 +1,147 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "authId": {
+          "type": "string",
+          "description": "The related Firebase Authentication User ID"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The user's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The user's last name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "dateJoined": {
+          "type": "string",
+          "description": "Date and time when the user joined.",
+          "format": "date-time"
+        },
+        "upiId": {
+          "type": "string",
+          "description": "User's UPI ID for payouts."
+        },
+        "paypalEmail": {
+          "type": "string",
+          "description": "User's PayPal email address for payouts.",
+          "format": "email"
+        },
+        "isAdmin": {
+          "type": "boolean",
+          "description": "Indicates whether the user has admin privileges."
+        },
+        "totalEarnings": {
+          "type": "number",
+          "description": "The user's total accumulated earnings in INR."
+        },
+        "totalBandwidthUsed": {
+          "type": "number",
+          "description": "The total amount of bandwidth shared by the user in GB."
+        },
+        "isSharing": {
+          "type": "boolean",
+          "description": "Indicates if the user is currently sharing bandwidth."
+        },
+        "referredBy": {
+          "type": "string",
+          "description": "The referral code of the user who referred this user."
+        }
+      },
+      "required": [
+        "id",
+        "authId",
+        "firstName",
+        "lastName",
+        "email",
+        "dateJoined"
+      ]
+    },
+    "PayoutRequest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PayoutRequest",
+      "type": "object",
+      "description": "Represents a user's request for a payout.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the PayoutRequest entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to UserProfile."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The amount requested for payout."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency of the payout request (e.g., INR, USD)."
+        },
+        "payoutMethod": {
+          "type": "string",
+          "description": "The payout method chosen by the user (e.g., UPI, PayPal)."
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the payout request (e.g., pending, approved, rejected)."
+        },
+        "requestDate": {
+          "type": "string",
+          "description": "Date and time when the payout request was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "amount",
+        "currency",
+        "payoutMethod",
+        "status",
+        "requestDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password"
+    ]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/backend/entities/UserProfile"
+      },
+      "description": "Stores user profile information."
+    },
+    "/users/{userId}/payoutRequests/{payoutRequestId}": {
+      "schema": {
+        "$ref": "#/backend/entities/PayoutRequest"
+      },
+      "description": "Stores payout requests for each user."
+    },
+    "/roles_admin/{userId}": {
+      "schema": {
+        "$ref": "#/backend/entities/UserProfile"
+      },
+      "description": "Indicates admin privileges for a user."
+    }
+  }
+}
