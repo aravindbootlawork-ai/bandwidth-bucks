@@ -68,7 +68,7 @@ export default function Dashboard() {
   
   const userAvatarUrl = user?.photoURL || PlaceHolderImages.find(img => img.id === "dashboard-avatar")?.imageUrl;
   
-  const isAdmin = user?.email === "stayconnectedtoearn@gmail.com";
+  const isAdmin = user?.email === "aravindbootlawork@gmail.com";
   const isSharing = userData?.isSharing || false;
 
   useEffect(() => {
