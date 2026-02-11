@@ -44,7 +44,7 @@ export default function AdminPage() {
   // Authentication check
   useEffect(() => {
     if (!isUserLoading) {
-      if (!user || user.email !== "stayconnectedtoearn@gmail.com") {
+      if (!user || user.email !== "aravindbootlawork@gmail.com") {
         router.push("/dashboard");
       }
     }
