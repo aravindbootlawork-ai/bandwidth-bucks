@@ -259,9 +259,9 @@ export default function Dashboard() {
               <CardContent>
                 <div className="text-2xl font-bold text-primary">₹{earnings.toFixed(2)}</div>
                 <div className="text-sm text-muted-foreground mt-1">${(earnings / 85.50).toFixed(2)} USD</div>
-                <p className="text-xs text-muted-foreground mt-2">₹5,000 Monthly Cap</p>
+                <p className="text-xs text-muted-foreground mt-2">₹1500 Monthly Cap</p>
                 <div className="mt-4">
-                  <ProgressBar percentage={earnings > 0 ? Math.min((earnings / 5000) * 100, 100) : 0} />
+                  <ProgressBar percentage={earnings > 0 ? Math.min((earnings / 1500) * 100, 100) : 0} />
                 </div>
               </CardContent>
             </Card>
